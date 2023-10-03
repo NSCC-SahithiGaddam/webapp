@@ -2,9 +2,9 @@ const Sequelize = require('sequelize');
 const sequelize = require('../database/bootstrap')
 const User = sequelize.define('User', {
   id: {
-    type: Sequelize.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
+    type: Sequelize.UUID,
+    defaultValue: Sequelize.UUIDV1,
+    primaryKey: true
   },
   first_name: {
     type: Sequelize.STRING,
