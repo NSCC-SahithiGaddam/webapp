@@ -6,7 +6,7 @@ const user = require('../models/User');
 const bcrypt = require("bcrypt")
 const saltRounds = 10
 
-const csvFilePath = './users.csv';
+const csvFilePath = '/opt/Users.csv';
 const finduser = async (email) => {
     const userdata = await user.findOne({where: {email: email}})
     if(userdata){

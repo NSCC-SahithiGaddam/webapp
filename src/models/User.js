@@ -1,18 +1,18 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../database/bootstrap')
 const User = sequelize.define('User', {
-  id: {
+  uid: {
     type: Sequelize.UUID,
     defaultValue: Sequelize.UUIDV1,
     primaryKey: true
   },
   first_name: {
     type: Sequelize.STRING,
-    allowNull: false,
+    allowNull: false
   },
   last_name: {
     type: Sequelize.STRING,
-    allowNull: false,
+    allowNull: false
   },
   email: {
     type: Sequelize.STRING,
@@ -24,7 +24,7 @@ const User = sequelize.define('User', {
   },
   password: {
     type: Sequelize.STRING,
-    allowNull: false,
+    allowNull: false
   },
   account_created: {
     type: Sequelize.DATE
@@ -37,5 +37,4 @@ const User = sequelize.define('User', {
     updatedAt: 'account_updated'
   }
 );
-
 module.exports = User;
