@@ -31,10 +31,12 @@ const Assignment = sequelize.define('Assignment', {
     allowNull: false
   },
   assignment_created: {
-    type: Sequelize.DATE
+    type: Sequelize.DATE,
+    readonly: true
   },
   assignment_updated: {
-    type: Sequelize.DATE
+    type: Sequelize.DATE,
+    readonly: true
   }},
   {
     createdAt: 'assignment_created',

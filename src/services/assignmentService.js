@@ -32,10 +32,13 @@ const postAssignment = async(req, res) => {
     const [email, password] = authorization.readAuthHeaders(req)
     const user = await readfromdb.findUser(email);
     // validate the request body
-    const { name, points, num_of_attempts, deadline } = req.body;
+    const { name, points, num_of_attempts, deadline,assignment_created,assignment_updated } = req.body;
     if (!name || !points || !num_of_attempts || !deadline) {
       return res.status(400).json({ message: 'Invalid request body' });
     }
+    if (assignment_created || assignment_updated) {
+        return res.status(403).json({ error: 'You donot have permissions to provide assignment created or updated' });
+      }
     // create a new assignment
     const userid = user.uid
     const createAssignment = await assignment.create({
@@ -59,7 +62,7 @@ const updateAssignment = async(req, res) => {
     try{
     const [email, password] = authorization.readAuthHeaders(req)
     const user = await readfromdb.findUser(email);
-    const { name, points, num_of_attempts, deadline } = req.body;
+    const { name, points, num_of_attempts, deadline,assignment_created, assignment_updated } = req.body;
     const id = req.params.id
     const assignment = await readfromdb.findAssignment(id)
     if(!assignment){
@@ -72,6 +75,9 @@ const updateAssignment = async(req, res) => {
     }
     if (!name || !points || !num_of_attempts || !deadline) {
         return res.status(400).json({ message: 'Invalid request body' });
+      }
+      if (assignment_created || assignment_updated) {
+        return res.status(403).json({ error: 'You donot have permissions to provide assignment created or updated' });
       }
     await assignment.update({
         "name": name || assignment.name,

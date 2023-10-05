@@ -85,5 +85,7 @@ app.all('/healthz', (req, res) => {
   res.status(405).end();
 });
 
+module.exports = app
+
 
 
