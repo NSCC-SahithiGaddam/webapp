@@ -2,24 +2,34 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const router = express.Router()
 const app = express();
-const sequelize = require("./src/database/bootstrap")
-const User = require('./src/models/User')
-const Assignment = require('./src/models/Assignment') 
+const {sequelize, createDatabase, syncDatabase, User, Assignment} = require("./src/database/bootstrap")
 const insertUser = require('./src/database/insert')
 const authenticate = require('./src/database/healthz')
 const mysql = require('mysql2')
 const database = 'Clouddb'
 const authorization = require('./src/authorization')
 const assignmentService = require('./src/services/assignmentService')
-
+const port = 3000
 app.use(express.json())
-app.listen(3000, ()=>{
-    console.log("Sever is now listening at port 3000");
-})
 
- sequelize.sync({alter: true}).then(()=> {
-  insertUser() 
-})
+if (!sequelize) {
+  console.error("Sequelize is not properly initialized.");
+  return;
+}
+
+(async () => {
+  try {
+    await createDatabase();
+    await sequelize.sync({ alter: true });
+    await insertUser();
+
+    app.listen(port, () => {
+      console.log("Server running on port", port);
+    });
+  } catch (error) {
+    console.error("Error:", error);
+  }
+})();
 
 User.hasMany(Assignment, {
   foreignKey: 'uid',
@@ -28,13 +38,10 @@ Assignment.belongsTo(User, {
   foreignKey: 'uid',
 });
 
-// Middleware for Basic Authentication
 async function isAuth(req, res, next) {
     await authorization.authorizationCheck(req, res, next)
   }
 
-//app.use(isAuth);
-// Authenticated endpoints
 app.use('/assignments', router)
 
 router.get('/', isAuth, async (req, res) => {

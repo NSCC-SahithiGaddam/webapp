@@ -1,19 +1,17 @@
-const sequelize = require('../database/bootstrap')
-const user = require('../models/User');
-const assignment = require('../models/Assignment')
+const {User, Assignment} = require('../database/bootstrap')
 
 const findUser = async (email) => {
-    const userdata = await user.findOne({where: {email: email}})
+    const userdata = await User.findOne({where: {email: email}})
     return userdata
 }
 
 const findAssignment = async (id) => {
-    const assignmentdata = await assignment.findOne({where: {id: id}})
+    const assignmentdata = await Assignment.findOne({where: {id: id}})
     return assignmentdata
 }
 
 const getAssignments = async () => {
-    const assignmentdata = await assignment.findAll()
+    const assignmentdata = await Assignment.findAll()
     return assignmentdata
 }
 

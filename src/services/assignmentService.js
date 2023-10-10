@@ -1,6 +1,6 @@
 const readfromdb = require('../database/read')
 const authorization = require('../authorization')
-const assignment = require('../models/Assignment') 
+const {Assignment} = require('../database/bootstrap')
 
 const getAssignments = async(req, res) => {
     try{
@@ -31,17 +31,21 @@ const postAssignment = async(req, res) => {
     try{
     const [email, password] = authorization.readAuthHeaders(req)
     const user = await readfromdb.findUser(email);
-    // validate the request body
     const { name, points, num_of_attempts, deadline,assignment_created,assignment_updated } = req.body;
     if (!name || !points || !num_of_attempts || !deadline) {
       return res.status(400).json({ message: 'Invalid request body' });
     }
+
+    if(!Number.isInteger(num_of_attempts)){
+        return res.status(400).json({message: 'Number of attempts should be integer'})
+    }
+
     if (assignment_created || assignment_updated) {
         return res.status(403).json({ error: 'You donot have permissions to provide assignment created or updated' });
       }
-    // create a new assignment
+    
     const userid = user.uid
-    const createAssignment = await assignment.create({
+    const createAssignment = await Assignment.create({
       name,
       points,
       num_of_attempts,
@@ -76,7 +80,11 @@ const updateAssignment = async(req, res) => {
     if (!name || !points || !num_of_attempts || !deadline) {
         return res.status(400).json({ message: 'Invalid request body' });
       }
-      if (assignment_created || assignment_updated) {
+
+    if(!Number.isInteger(num_of_attempts)){
+        return res.status(400).json({message: 'Number of attempts should be integer'})
+    }
+    if (assignment_created || assignment_updated) {
         return res.status(403).json({ error: 'You donot have permissions to provide assignment created or updated' });
       }
     await assignment.update({
@@ -85,7 +93,7 @@ const updateAssignment = async(req, res) => {
         "num_of_attempts": num_of_attempts || assignment.num_of_attempts,
         "deadline": deadline || assignment.deadline
     })
-    .then((assignment)=>{return res.status(200).json(assignment);})
+    .then(()=>{return res.status(204).send()})
     .catch((err) => {
         return res.status(400).json({message: 'check min and max'})
     })
@@ -110,7 +118,7 @@ const deleteAssignment = async (req, res) => {
         return;
       }
       await assignment.destroy()
-      res.status(200).json(assignment);
+      return res.status(204).send();
     }
     catch(err){
         return res.status(500).send()
