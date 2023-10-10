@@ -1,14 +1,13 @@
 const fs = require('fs');
 const csv = require('csv-parser');
-const sequelize = require('../database/bootstrap')
-const user = require('../models/User');
+const {User, Assignment} = require('../database/bootstrap')
 
 const bcrypt = require("bcrypt")
 const saltRounds = 10
 
 const csvFilePath = '/opt/Users.csv';
 const finduser = async (email) => {
-    const userdata = await user.findOne({where: {email: email}})
+    const userdata = await User.findOne({where: {email: email}})
     if(userdata){
         return true
     }
@@ -27,7 +26,7 @@ const insert_into_db = async () => {
       const isUserExists = await finduser(data.email)
       const encryptedPassword = await encryptPassword(data.password)
       if(!isUserExists){
-        user.create({
+        User.create({
             first_name: data.first_name,
             last_name: data.last_name,
             email: data.email,
