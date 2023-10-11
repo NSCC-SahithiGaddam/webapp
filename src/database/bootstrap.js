@@ -8,7 +8,7 @@ require('dotenv').config();
 const database = process.env.database
 const user = process.env.username
 const password = process.env.password
-const dialectName = process.env.dialect
+//const dialectName = process.env.dialect
 const host = process.env.host
 
 // const sequelize = new Sequelize(
@@ -21,7 +21,7 @@ const host = process.env.host
   const sequelize = new Sequelize(
     database, user, password, 
     {
-      dialect: dialectName,
+      dialect: "mysql",
       host: host
     })
 
