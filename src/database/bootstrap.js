@@ -42,6 +42,7 @@ const createDatabase = async () => {
   await connection.query(`CREATE DATABASE IF NOT EXISTS \`${database}\`;`);
 };
 
+
 module.exports = {
   sequelize,
   createDatabase,
