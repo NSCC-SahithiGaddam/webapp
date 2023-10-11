@@ -21,7 +21,7 @@ const host = process.env.host
   const sequelize = new Sequelize(
     database, user, password, 
     {
-      dialect: "mysql,
+      dialect: "mysql",
       host: host
     })
 
