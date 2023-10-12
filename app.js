@@ -45,6 +45,7 @@ async function isAuth(req, res, next) {
 
 app.use('/v1/assignments', router)
 
+
 router.get('/', isAuth, async (req, res) => {
   await assignmentService.getAssignments(req, res)
 })
