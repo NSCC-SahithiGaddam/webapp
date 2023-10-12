@@ -1,22 +1,19 @@
-const config = require('../../config/config.json')
 const { Sequelize } = require("sequelize");
 const mysql = require("mysql2/promise");
 const UserModel = require("../models/User");
 const AssignmentModel = require("../models/Assignment");
 
 require('dotenv').config();
-// const database = process.env.database
-// const user = process.env.username
-// const password = process.env.password
-// const dialect = process.env.dialect
-// const host = process.env.host
+const database = process.env.DB_NAME
+const user = process.env.DB_USER
+const password = process.env.DB_PASSWORD
+const host = process.env.DB_HOST
+const dialect = process.env.DB_DIALECT;
 
-const sequelize = new Sequelize(
-  "Clouddb", "root", "password", 
-  {
-    dialect: "mysql",
-    host: "127.0.0.1"
-  })
+const sequelize = new Sequelize(database, user, password, {
+  host: host,
+  dialect: dialect,
+});
 
 const User = UserModel(sequelize);
 const Assignment = AssignmentModel(sequelize);
@@ -28,9 +25,9 @@ const syncDatabase = async () => {
 
 const createDatabase = async () => {
   const connection = await mysql.createConnection({
-    host: "127.0.0.1",
-    user: "root",
-    password: "password",
+    host: host,
+    user: user,
+    password: password,
   });
   await connection.query(`CREATE DATABASE IF NOT EXISTS \`${database}\`;`);
 };

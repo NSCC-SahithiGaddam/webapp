@@ -9,7 +9,8 @@ const mysql = require('mysql2')
 const database = 'Clouddb'
 const authorization = require('./src/authorization')
 const assignmentService = require('./src/services/assignmentService')
-const port = 3000
+require('dotenv').config();
+const port = process.env.PORT
 app.use(express.json())
 
 if (!sequelize) {
@@ -42,7 +43,8 @@ async function isAuth(req, res, next) {
     await authorization.authorizationCheck(req, res, next)
   }
 
-app.use('/assignments', router)
+app.use('/v1/assignments', router)
+
 
 router.get('/', isAuth, async (req, res) => {
   await assignmentService.getAssignments(req, res)

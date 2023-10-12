@@ -4,8 +4,8 @@ const {User, Assignment} = require('../database/bootstrap')
 
 const bcrypt = require("bcrypt")
 const saltRounds = 10
-
-const csvFilePath = '/opt/Users.csv';
+require('dotenv').config();
+const csvFilePath = process.env.CSV_FILE;
 const finduser = async (email) => {
     const userdata = await User.findOne({where: {email: email}})
     if(userdata){
