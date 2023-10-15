@@ -12,8 +12,8 @@ variable "aws_region" {
   default = "us-east-1"
 }
 
-variable "aws_profile"{
-  type = string
+variable "aws_profile" {
+  type    = string
   default = "git"
 }
 variable "source_ami" {
@@ -42,7 +42,7 @@ source "amazon-ebs" "my-ami" {
 
   aws_polling {
     delay_seconds = 120
-    max_attempts  = 50
+  max_attempts  = 50
   }
 
   instance_type = "t2.micro"

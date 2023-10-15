@@ -22,7 +22,12 @@ jobs:
           packer --version
         shell: bash
 
+      - name: Run `packer init`
+        id: init
+        run: "packer init ./image.pkr.hcl"
+
       - name: Format and validate Packer Template
         run: |
-          packer fmt ami.pkr.hcl
-          packer validate ami.pkr.hcl
+          set -e
+          packer fmt -check ami.pkr.hcl
+          echo "Packer formatting check passed for ami.pkr.hcl"
