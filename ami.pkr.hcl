@@ -42,7 +42,7 @@ source "amazon-ebs" "my-ami" {
 
   aws_polling {
     delay_seconds = 120
-  max_attempts  = 50
+    max_attempts  = 50
   }
 
   instance_type = "t2.micro"
