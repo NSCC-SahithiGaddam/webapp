@@ -22,7 +22,7 @@ variable "source_ami" {
 }
 
 variable "ssh_username" {
-  type    = string
+  type    = strin
   default = "admin"
 }
 
