@@ -30,4 +30,5 @@ jobs:
         run: |
           set -e
           packer fmt -check ami.pkr.hcl
-          echo "Packer formatting check passed for ami.pkr.hcl"
+          packer validate ami.pkr.hcl
+          echo "Packer formatting and validation check passed for ami.pkr.hcl"
