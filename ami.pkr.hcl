@@ -68,4 +68,3 @@ build {
     ]
     scripts = ["install.sh"]
   }
-}
