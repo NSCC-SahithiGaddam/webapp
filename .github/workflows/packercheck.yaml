@@ -22,9 +22,9 @@ jobs:
           packer --version
         shell: bash
 
-      - name: Run `packer init`
-        id: init
-        run: "packer init ./ami.pkr.hcl"
+      # - name: Run `packer init`
+      #   id: init
+      #   run: "packer init ./ami.pkr.hcl"
 
       - name: Format and validate Packer Template
         run: |
