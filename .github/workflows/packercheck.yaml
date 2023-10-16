@@ -22,12 +22,12 @@ jobs:
           packer --version
         shell: bash
 
-      # - name: Run `packer init`
-      #   id: init
-      #   run: "packer init ./ami.pkr.hcl"
+      - name: Install packer plugins
+        run: packer plugins install github.com/hashicorp/amazon
 
       - name: Format and validate Packer Template
         run: |
           set -e
           packer fmt -check ami.pkr.hcl
+          packer validate ami.pkr.hcl
           echo "Packer formatting and validation check passed for ami.pkr.hcl"
