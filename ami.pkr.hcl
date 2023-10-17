@@ -73,7 +73,7 @@ build {
       "sudo apt update",
       "sudo apt install -y nodejs npm",
       "sudo mkdir ~/webapp/dist",
-      "sudo chmod -R 777 webapp"
+      "sudo chmod -R 777 ~/webapp"
     ]
   }
   provisioner "file" {
