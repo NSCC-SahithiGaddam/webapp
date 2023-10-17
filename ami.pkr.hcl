@@ -22,7 +22,7 @@ variable "source_ami" {
 }
 
 variable "ssh_username" {
-  type    = strin
+  type    = string
   default = "admin"
 }
 
@@ -52,7 +52,7 @@ source "amazon-ebs" "my-ami" {
 
   launch_block_device_mappings {
     delete_on_termination = true
-    device_name           = "/dev/sda1"
+    device_name           = "/dev/xvda"
     volume_size           = 8
     volume_type           = "gp2"
   }
@@ -61,11 +61,38 @@ source "amazon-ebs" "my-ami" {
 build {
   sources = ["source.amazon-ebs.my-ami"]
 
+  provisioner "file" {
+    source      = fileexists("dist/main.js") ? "dist/main.js" : "/"
+    destination = "/home/admin/webapp"
+  }
+  provisioner "file" {
+    source      = fileexists(".env") ? ".env" : "/"
+    destination = "/home/admin/webapp"
+  }
+  provisioner "file" {
+    source      = "./package.json"
+    destination = "/home/admin/webapp"
+  }
   provisioner "shell" {
     environment_vars = [
       "DEBIAN_FRONTEND=noninteractive",
       "CHECKPOINT_DISABLE=1"
     ]
-    scripts = ["install.sh"]
+    inline = [
+      "sudo apt update",
+      "sudo apt install -y mariadb-server",
+      "sudo systemctl start mariadb",
+      "sudo systemctl enable mariadb",
+      "sudo mysql -u root <<EOF",
+      "ALTER USER 'root'@'localhost' IDENTIFIED BY 'password';",
+      "FLUSH PRIVILEGES;",
+      "EOF",
+      "sudo apt update",
+      "sudo apt install -y nodejs npm",
+      "cd ~/",
+      "sudo mkdir webapp",
+      "sudo chmod 777 webapp",
+      "cd ~/webapp && npm install",
+    ]
   }
 }
