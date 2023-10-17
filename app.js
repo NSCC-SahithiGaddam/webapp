@@ -11,12 +11,7 @@ const authorization = require('./src/authorization')
 const assignmentService = require('./src/services/assignmentService')
 require('dotenv').config();
 const port = process.env.PORT
-app.use(express.json())
-
-if (!sequelize) {
-  console.error("Sequelize is not properly initialized.");
-  return;
-}
+app.use(express.json());
 
 (async () => {
   try {
