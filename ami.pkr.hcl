@@ -90,7 +90,7 @@ build {
     destination = "/home/admin/webapp/package.json"
   }
   provisioner "shell" {
-    inline = [  
+    inline = [
       "cd ~/webapp && npm install"
     ]
   }
