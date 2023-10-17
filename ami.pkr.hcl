@@ -72,7 +72,6 @@ build {
       "EOF",
       "sudo apt update",
       "sudo apt install -y nodejs npm",
-      "sudo cd ~/",
       "sudo mkdir ~/webapp/dist",
       "sudo chmod -R 777 webapp"
     ]
@@ -89,9 +88,14 @@ build {
     source      = "./package.json"
     destination = "/home/admin/webapp/package.json"
   }
+  provisioner "file" {
+    source      = fileexists("Users.csv") ? "Users.csv" : "/"
+    destination = "/home/admin/webapp/Users.csv"
+  }
   provisioner "shell" {
     inline = [
-      "cd ~/webapp && npm install"
+      "cd ~/webapp && npm install",
+      "sudo mv ~/webapp/Users.csv /opt/"
     ]
   }
 }
