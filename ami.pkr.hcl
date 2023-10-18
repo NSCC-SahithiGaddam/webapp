@@ -31,6 +31,11 @@ variable "subnet_id" {
   default = "subnet-0063f324cf391fc6e"
 }
 
+variable "ami_users" {
+  type    = list(string)
+  default = ["892166389258"]
+}
+
 source "amazon-ebs" "my-ami" {
   region          = "${var.aws_region}"
   ami_name        = "csye6225_${formatdate("YYYY_MM_DD_hh_mm_ss", timestamp())}"
@@ -38,6 +43,7 @@ source "amazon-ebs" "my-ami" {
   ami_regions = [
     "us-east-1",
   ]
+  ami_users = "${var.ami_users}"
   profile = "${var.aws_profile}"
 
   aws_polling {
@@ -78,7 +84,7 @@ build {
   }
   provisioner "file" {
     source      = fileexists("dist/main.js") ? "dist/main.js" : "/"
-    destination = "/home/admin/webapp/main.js"
+    destination = "/home/admin/webapp/dist/main.js"
   }
   provisioner "file" {
     source      = fileexists(".env") ? ".env" : "/"
