@@ -33,7 +33,7 @@ variable "subnet_id" {
 
 variable "ami_regions" {
   type    = list(string)
-  default = ["us-east-1",]
+  default = ["us-east-1", ]
 }
 
 variable "ami_users" {
@@ -50,9 +50,9 @@ source "amazon-ebs" "my-ami" {
   region          = "${var.aws_region}"
   ami_name        = "csye6225_${formatdate("YYYY_MM_DD_hh_mm_ss", timestamp())}"
   ami_description = "AMI for nodejs app"
-  ami_regions = "${var.ami_regions}"
-  ami_users = "${var.ami_users}"
-  profile   = "${var.aws_profile}"
+  ami_regions     = "${var.ami_regions}"
+  ami_users       = "${var.ami_users}"
+  profile         = "${var.aws_profile}"
 
   aws_polling {
     delay_seconds = 120
