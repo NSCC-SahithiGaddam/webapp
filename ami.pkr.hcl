@@ -31,27 +31,35 @@ variable "subnet_id" {
   default = "subnet-0063f324cf391fc6e"
 }
 
+variable "ami_regions" {
+  type    = list(string)
+  default = ["us-east-1", ]
+}
+
 variable "ami_users" {
   type    = list(string)
   default = ["892166389258"]
+}
+
+variable "instance_type" {
+  type    = string
+  default = "t2.micro"
 }
 
 source "amazon-ebs" "my-ami" {
   region          = "${var.aws_region}"
   ami_name        = "csye6225_${formatdate("YYYY_MM_DD_hh_mm_ss", timestamp())}"
   ami_description = "AMI for nodejs app"
-  ami_regions = [
-    "us-east-1",
-  ]
-  ami_users = "${var.ami_users}"
-  profile   = "${var.aws_profile}"
+  ami_regions     = "${var.ami_regions}"
+  ami_users       = "${var.ami_users}"
+  profile         = "${var.aws_profile}"
 
   aws_polling {
     delay_seconds = 120
     max_attempts  = 50
   }
 
-  instance_type = "t2.micro"
+  instance_type = "${var.instance_type}"
   source_ami    = "${var.source_ami}"
   ssh_username  = "${var.ssh_username}"
   subnet_id     = "${var.subnet_id}"
