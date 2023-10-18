@@ -106,7 +106,7 @@ build {
     source      = fileexists("Users.csv") ? "Users.csv" : "/"
     destination = "/home/admin/webapp/Users.csv"
   }
-  provisioner "shell" {
+  provisioner "shell" 
     inline = [
       "cd ~/webapp && npm install",
       "sudo mv ~/webapp/Users.csv /opt/"
