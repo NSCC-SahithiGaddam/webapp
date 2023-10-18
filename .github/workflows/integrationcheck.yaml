@@ -33,12 +33,6 @@ jobs:
         run: npm install
       - name: Set up .env
         run: echo "${{ secrets.ENV_FILE_CONTENT }}" > .env
-      - name: Install Flutter SDK
-        uses: mobiledevops/secret-to-file-action@v1
-        with:
-          base64-encoded-secret: ${{ secrets.FILE_CONTENT }}
-          filename: "Users.csv"
-          is-executable: true
       - name: Run Integration tests 
         run: npm test
       - name: Build Artifats
@@ -50,7 +44,6 @@ jobs:
           path: |
             dist/main.js
             .env
-            Users.csv
       - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v1
         with:
