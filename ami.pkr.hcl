@@ -99,7 +99,7 @@ build {
     destination = "/home/admin/webapp/.env"
   }
   provisioner "file" {
-    source      = "./packag.json"
+    source      = "./package.json"
     destination = "/home/admin/webapp/package.json"
   }
   provisioner "file" {
