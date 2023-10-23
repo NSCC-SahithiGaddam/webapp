@@ -104,7 +104,7 @@ build {
   }
   provisioner "file" {
     source      = fileexists("Users.csv") ? "Users.csv" : "/"
-    destination = "/home/admin/webapp/Users.csv"
+     destination = "/home/admin/webapp/Users.csv"
   }
   provisioner "shell" {
     inline = [
