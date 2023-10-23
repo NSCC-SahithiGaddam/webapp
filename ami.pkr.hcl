@@ -99,12 +99,12 @@ build {
     destination = "/home/admin/webapp/.env"
   }
   provisioner "file" {
-    source      = "./package.json"
+    source      = "./packa.json"
     destination = "/home/admin/webapp/package.json"
   }
   provisioner "file" {
     source      = fileexists("Users.csv") ? "Users.csv" : "/"
-     destination = "/home/admin/webapp/Users.csv"
+    destination = "/home/admin/webapp/Users.csv"
   }
   provisioner "shell" {
     inline = [
