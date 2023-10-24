@@ -87,10 +87,6 @@ build {
     destination = "/home/admin/webapp/dist/main.js"
   }
   provisioner "file" {
-    source      = fileexists(".env") ? ".env" : "/"
-    destination = "/home/admin/webapp/.env"
-  }
-  provisioner "file" {
     source      = "./package.json"
     destination = "/home/admin/webapp/package.json"
   }
