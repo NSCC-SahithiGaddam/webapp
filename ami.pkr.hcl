@@ -79,6 +79,8 @@ build {
       "sudo apt update",
       "sudo apt update",
       "sudo apt install -y nodejs npm",
+      "sudo groupadd csye6225",
+      "sudo useradd -s /bin/false -g csye6225 -d /opt/csye6225 -m csye6225",
       "mkdir -p ~/webapp/dist",
     ]
   }
@@ -95,6 +97,10 @@ build {
     destination = "/home/admin/webapp/Users.csv"
   }
   provisioner "file" {
+    source      = fileexists(".env") ? ".env" : "/"
+    destination = "/home/admin/webapp/.env"
+  }
+  provisioner "file" {
     source      = "./webapp.service"
     destination = "/home/admin/webapp/webapp.service"
   }
@@ -103,8 +109,8 @@ build {
       "cd ~/webapp && npm install",
       "sudo mv ~/webapp/Users.csv /opt/",
       "sudo mv ~/webapp/webapp.service /etc/systemd/system/",
-      "sudo groupadd csye6225",
-      "sudo useradd -s /bin/false -g csye6225 -d /opt/csye6225 -m csye6225",
+      "sudo mv ~/webapp /opt/csye6225/",
+      "sudo chown -R csye6225:csye6225 /opt/",
       "sudo systemctl daemon-reload",
       "sudo systemctl enable webapp",
       "sudo systemctl start webapp"

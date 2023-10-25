@@ -20,7 +20,9 @@ const getAssignmentById = async(req, res) => {
             res.status(404).send("Invalid Assignment")
             return;
         }
-        res.status(200).json(assignment)
+        const assignmentWithoutUid = { ...assignment.toJSON() };
+        delete assignmentWithoutUid.uid;
+        res.status(200).send(assignmentWithoutUid)
     }
 catch(err){
     res.status(500).send()
@@ -36,12 +38,19 @@ const postAssignment = async(req, res) => {
       return res.status(400).json({ message: 'Invalid request body' });
     }
 
+    if(typeof name !== 'string'){
+        return res.status(400).json({message: 'Name must be string'})
+    }
+
     if(!Number.isInteger(num_of_attempts)){
         return res.status(400).json({message: 'Number of attempts should be integer'})
     }
+    if(typeof deadline !== 'string' || isNaN(Date.parse(deadline))){
+        return res.status(400).json({message: 'deadline should be a date string'})
+    }
 
     if (assignment_created || assignment_updated) {
-        return res.status(403).json({ error: 'You donot have permissions to provide assignment created or updated' });
+        return res.status(403).json({ error: 'You do not have permissions to provide assignment created or updated' });
       }
     
     const userid = user.uid
@@ -52,7 +61,10 @@ const postAssignment = async(req, res) => {
       deadline,
       uid: userid
     })
-    .then((createAssignment) => {return res.status(201).json(createAssignment)})
+    .then((createAssignment) => {
+        const createAssignmentWithoutUid = { ...createAssignment.toJSON() };
+        delete createAssignmentWithoutUid.uid;
+        return res.status(201).send(createAssignmentWithoutUid)})
     .catch((err) => {
         return res.status(400).json({message: 'check min and max'})
     })
@@ -79,14 +91,23 @@ const updateAssignment = async(req, res) => {
     }
     if (!name || !points || !num_of_attempts || !deadline) {
         return res.status(400).json({ message: 'Invalid request body' });
-      }
+    }
+    
+    if(typeof deadline !== 'string'){
+        return res.status(400).json({message: 'Name must be string'})
+    }
 
     if(!Number.isInteger(num_of_attempts)){
         return res.status(400).json({message: 'Number of attempts should be integer'})
     }
+
+    if(typeof deadline !== 'string' || isNaN(Date.parse(deadline))){
+        return res.status(400).json({message: 'deadline should be a date string'})
+    }
+
     if (assignment_created || assignment_updated) {
-        return res.status(403).json({ error: 'You donot have permissions to provide assignment created or updated' });
-      }
+        return res.status(403).json({ error: 'You do not have permissions to provide assignment created or updated' });
+    }
     await assignment.update({
         "name": name || assignment.name,
         "points": points || assignment.points,

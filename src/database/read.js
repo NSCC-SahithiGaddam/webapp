@@ -11,7 +11,10 @@ const findAssignment = async (id) => {
 }
 
 const getAssignments = async () => {
-    const assignmentdata = await Assignment.findAll()
+    const assignmentdata = await Assignment.findAll({
+        attributes: {
+          exclude: ['uid'],}
+        })
     return assignmentdata
 }
 
