@@ -94,10 +94,20 @@ build {
     source      = fileexists("Users.csv") ? "Users.csv" : "/"
     destination = "/home/admin/webapp/Users.csv"
   }
+  provisioner "file" {
+    source      = "./webapp.service"
+    destination = "/home/admin/webapp/webapp.service"
+  }
   provisioner "shell" {
     inline = [
       "cd ~/webapp && npm install",
       "sudo mv ~/webapp/Users.csv /opt/"
+      "sudo mv ~/webapp/webapp.service /etc/systemd/system/"
+      "sudo groupadd csye6225",
+      "sudo useradd -s /bin/false -g csye6225 -d /opt/csye6225 -m csye6225",
+      "sudo systemctl daemon-reload",
+      "sudo systemctl enable webapp",
+      "sudo systemctl start webapp"
     ]
   }
 }
