@@ -1,5 +1,6 @@
 const readfromdb = require('./database/read')
 const bcrypt = require('bcrypt');
+const logger = require('../logger')
 const readAuthHeaders = (req,res) => {
     const auth = req.headers.authorization;
     if (!auth) {
@@ -10,6 +11,7 @@ const readAuthHeaders = (req,res) => {
 }
 
 const authorizationCheck = async (req, res, next) => {
+  try{
     const [email, password] = readAuthHeaders(req,res)
     const user = await readfromdb.findUser(email);
     if (!user) {
@@ -22,6 +24,11 @@ const authorizationCheck = async (req, res, next) => {
       return;
     }
     next();
+  }
+  catch(ex){
+    logger.error("Database service unavailable")
+    res.status(503).send('Service unavailable');
+  }
 }
 
 module.exports = {readAuthHeaders, authorizationCheck}

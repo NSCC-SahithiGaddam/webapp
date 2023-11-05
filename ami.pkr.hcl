@@ -78,6 +78,9 @@ build {
     inline = [
       "sudo apt update",
       "sudo apt install -y nodejs npm",
+      "wget https://amazoncloudwatch-agent.s3.amazonaws.com/debian/amd64/latest/amazon-cloudwatch-agent.deb"
+      "cd /tmp/"
+      "sudo dpkg -i -E ./amazon-cloudwatch-agent.deb"
       "sudo groupadd csye6225",
       "sudo useradd -s /bin/false -g csye6225 -d /opt/csye6225 -m csye6225",
       "mkdir -p ~/webapp/dist",
@@ -102,6 +105,10 @@ build {
   provisioner "file" {
     source      = "webapp.service"
     destination = "/home/admin/webapp/webapp.service"
+  }
+  provisioner "file" {
+    source      = "cloudwatch-config.json"
+    destination = "/home/admin/webapp/cloudwatch-config.json"
   }
   provisioner "shell" {
     inline = [

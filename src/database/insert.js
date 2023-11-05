@@ -2,16 +2,22 @@ const fs = require('fs');
 const csv = require('csv-parser');
 const {User, Assignment} = require('../database/bootstrap')
 
-const bcrypt = require("bcrypt")
+const bcrypt = require("bcrypt");
+const logger = require('../../logger');
 const saltRounds = 10
 require('dotenv').config();
 const csvFilePath = process.env.CSV_FILE;
 const finduser = async (email) => {
-    const userdata = await User.findOne({where: {email: email}})
-    if(userdata){
-        return true
-    }
-    else return false
+  try{
+      const userdata = await User.findOne({where: {email: email}})
+      if(userdata){
+          return true
+      }
+      else return false
+  }
+  catch(ex){
+    logger.error("Database Service unavailable")
+  }
 }
 
 const encryptPassword = async (password) => {
@@ -32,20 +38,21 @@ const insert_into_db = async () => {
             email: data.email,
             password: encryptedPassword
           })
-            .then(() => {
-              console.log('Record inserted');
+            .then(async() => {
+              getInserteduser = await finduser(data.email)
+              logger.info(`User Record inserted: ${getInserteduser.uid}`);
             })
             .catch((error) => {
-              console.error('Error inserting record:', error);
+              logger.error(`Error inserting user record: ${error}`);
             });
       }
       else{
-        console.error('User already exists')
+        logger.info(`User already exists`)
       }
       
     })
     .on('end', () => {
-      console.log('CSV data import complete.');
+      logger.info('CSV data import complete.');
     });
 }
   module.exports = insert_into_db

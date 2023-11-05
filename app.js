@@ -9,6 +9,7 @@ const mysql = require('mysql2')
 const database = 'Clouddb'
 const authorization = require('./src/authorization')
 const assignmentService = require('./src/services/assignmentService')
+const logger = require("./logger")
 require('dotenv').config();
 const port = process.env.PORT
 app.use(express.json());
@@ -18,12 +19,13 @@ app.use(express.json());
     await createDatabase();
     await sequelize.sync({ alter: true });
     await insertUser();
-
-    app.listen(port, () => {
-      console.log("Server running on port", port);
-    });
   } catch (error) {
-    console.error("Error:", error);
+    logger.error("Error:", error);
+  }
+  finally{
+    app.listen(port, () => {
+      logger.info("Server running on port", port);
+    });
   }
 })();
 
@@ -75,11 +77,11 @@ app.get('/healthz', async (req, res)=>{
     }
     try{
         await sequelize.authenticate()
-        console.log("Successfully connected to MySQL")
+        logger.info("Successfully connected to MySQL")
         res.status(200)
     }
     catch(err){
-        console.log("Unable to connect to MySQL", err)
+        logger.info("Unable to connect to MySQL", err)
         res.status(503)
     }
     res.end()
