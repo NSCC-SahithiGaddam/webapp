@@ -20,6 +20,7 @@ DB_NAME = Clouddb
 DB_DIALECT = mysql
 APP_PORT = 3000
 
+
 run appliation: npm start (npm node app.js)
 
 Application Testing
