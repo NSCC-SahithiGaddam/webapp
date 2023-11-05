@@ -19,13 +19,11 @@ app.use(express.json());
     await createDatabase();
     await sequelize.sync({ alter: true });
     await insertUser();
-  } catch (error) {
-    logger.error("Error:", error);
-  }
-  finally{
     app.listen(port, () => {
       logger.info("Server running on port", port);
     });
+  } catch (error) {
+    logger.error("Error:", error);
   }
 })();
 
