@@ -2,6 +2,7 @@ const { Sequelize } = require("sequelize");
 const mysql = require("mysql2/promise");
 const UserModel = require("../models/User");
 const AssignmentModel = require("../models/Assignment");
+const logger = require("../../logger")
 
 require('dotenv').config();
 const database = process.env.DB_NAME
@@ -20,7 +21,7 @@ const Assignment = AssignmentModel(sequelize);
 
 const syncDatabase = async () => {
   await sequelize.sync({ alter: true });
-  console.log("Models synchronized successfully.");
+  logger.info("Models synchronized successfully.");
 };
 
 const createDatabase = async () => {

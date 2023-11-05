@@ -1,13 +1,16 @@
 const readfromdb = require('../database/read')
 const authorization = require('../authorization')
 const {Assignment} = require('../database/bootstrap')
+const logger = require('../../logger')
 
 const getAssignments = async(req, res) => {
     try{
     const assignments = await readfromdb.getAssignments()
+    logger.info('Successfully fetched assignments')
      res.status(200).json(assignments)
     }
     catch(err){
+        logger.error(`Error fetching assignments ${err}`)
         res.status(500).send()
     }
 }
@@ -17,14 +20,17 @@ const getAssignmentById = async(req, res) => {
         const id = req.params.id
         const assignment = await readfromdb.findAssignment(id)
         if(!assignment){
+            logger.warn(`Invalid Assignment id ${id}`)
             res.status(404).send("Invalid Assignment")
             return;
         }
         const assignmentWithoutUid = { ...assignment.toJSON() };
         delete assignmentWithoutUid.uid;
+        logger.info(`Successfully fetched assignment id: ${id}`)
         res.status(200).send(assignmentWithoutUid)
     }
 catch(err){
+    logger.error(`Error fetching assignment for id: ${req.params.id} - ${err}`)
     res.status(500).send()
 }
 }
@@ -64,12 +70,15 @@ const postAssignment = async(req, res) => {
     .then((createAssignment) => {
         const createAssignmentWithoutUid = { ...createAssignment.toJSON() };
         delete createAssignmentWithoutUid.uid;
+        logger.info(`Successfully posted assignment id: ${createAssignmentWithoutUid.id}`)
         return res.status(201).send(createAssignmentWithoutUid)})
     .catch((err) => {
-        return res.status(400).json({message: 'check min and max'})
+        logger.error(`Error posting assignment ${err}`)
+        return res.status(400).send()
     })
 }
 catch(err){
+    logger.error(`Error posting assignment ${err}`)
     return res.status(500).send()
 }
 }
@@ -82,6 +91,7 @@ const updateAssignment = async(req, res) => {
     const id = req.params.id
     const assignment = await readfromdb.findAssignment(id)
     if(!assignment){
+        logger.warn(`Invalid Assignment id ${id}`)
         res.status(404).send("Invalid Assignment")
         return;
     }
@@ -114,12 +124,16 @@ const updateAssignment = async(req, res) => {
         "num_of_attempts": num_of_attempts || assignment.num_of_attempts,
         "deadline": deadline || assignment.deadline
     })
-    .then(()=>{return res.status(204).send()})
+    .then(()=>{
+        logger.info(`Successfully updated assignment id: ${id}`)
+        return res.status(204).send()})
     .catch((err) => {
+        logger.error(`Error updating assignment ${err}`)
         return res.status(400).json({message: 'check min and max'})
     })
     }
     catch(err){
+        logger.error(`Error updating assignment ${err}`)
         return res.status(500).send()
     }
 }
@@ -131,6 +145,7 @@ const deleteAssignment = async (req, res) => {
     const id = req.params.id
     const assignment = await readfromdb.findAssignment(id)
     if(!assignment){
+        logger.warn(`Invalid Assignment id ${id}`)
         res.status(404).send("Invalid Assignment")
         return;
     }
@@ -139,9 +154,11 @@ const deleteAssignment = async (req, res) => {
         return;
       }
       await assignment.destroy()
+      logger.info(`Successfully deleted assignment id: ${id}`)
       return res.status(204).send();
     }
     catch(err){
+        logger.error(`Error updating assignment ${err}`)
         return res.status(500).send()
     }
 }
