@@ -10,6 +10,7 @@ const database = 'Clouddb'
 const authorization = require('./src/authorization')
 const assignmentService = require('./src/services/assignmentService')
 const logger = require("./logger")
+const statsDClient = require('./metrics')
 require('dotenv').config();
 const port = process.env.PORT
 app.use(express.json());
@@ -42,30 +43,37 @@ app.use('/v1/assignments', router)
 
 
 router.get('/', isAuth, async (req, res) => {
+  statsDClient.increment('assignment_get');
   await assignmentService.getAssignments(req, res)
 })
 
 router.get('/:id', isAuth, async (req, res) => {
+  statsDClient.increment('assignment_getbyid');
   await assignmentService.getAssignmentById(req, res)
 })
 
 router.post('/', isAuth, async (req, res) => {
+  statsDClient.increment('assignment_post');
     await assignmentService.postAssignment(req, res)
 });
 
 router.put('/:id', isAuth, async (req, res) => {
+  statsDClient.increment('assignment_put');
   await assignmentService.updateAssignment(req, res)
 })
 
 router.delete('/:id', isAuth, async (req, res) => {
+  statsDClient.increment('assignment_delete');
   await assignmentService.deleteAssignment(req, res)
 })
 
 router.patch('/*', isAuth, async (req, res) => {
+  statsDClient.increment('assignment_patch');
   return res.status(405).end()
 })
 
 app.get('/healthz', async (req, res)=>{
+  statsDClient.increment('healthz_get');
   res.setHeader('cache-control', 'no-cache');
     if (Object.keys(req.body).length > 0) {
         return res.status(400).send();
