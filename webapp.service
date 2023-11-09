@@ -1,7 +1,7 @@
 [Unit]
 Description=Webapp Service
 ConditionPathExists=/opt/csye6225/webapp
-After=cloud-final.target
+After=network.target
 
 [Service]
 Type=simple
