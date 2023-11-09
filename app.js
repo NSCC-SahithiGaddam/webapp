@@ -24,7 +24,7 @@ app.use(express.json());
       logger.info("Server running on port", port);
     });
   } catch (error) {
-    logger.error("Error:", error);
+    console.log(error);
   }
 })();
 
