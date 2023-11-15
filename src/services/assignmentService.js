@@ -20,7 +20,7 @@ const getAssignmentById = async(req, res) => {
         const id = req.params.id
         const assignment = await readfromdb.findAssignment(id)
         if(!assignment){
-            logger.warn(`Invalid Assignment id ${id}`)
+            logger.info(`Invalid Assignment id ${id}`)
             res.status(404).send("Invalid Assignment")
             return;
         }
@@ -41,21 +41,26 @@ const postAssignment = async(req, res) => {
     const user = await readfromdb.findUser(email);
     const { name, points, num_of_attempts, deadline,assignment_created,assignment_updated } = req.body;
     if (!name || !points || !num_of_attempts || !deadline) {
+        logger.info("Invalid input - Enter all fields")
       return res.status(400).json({ message: 'Invalid request body' });
     }
 
     if(typeof name !== 'string'){
+        logger.info(`Invalid input ${name} - Name must be string`)
         return res.status(400).json({message: 'Name must be string'})
     }
 
     if(!Number.isInteger(num_of_attempts)){
+        logger.info(`Invalid input ${num_of_attempts} - Number of attempts should be integer`)
         return res.status(400).json({message: 'Number of attempts should be integer'})
     }
     if(typeof deadline !== 'string' || isNaN(Date.parse(deadline))){
+        logger.info(`Invalid input ${deadline} - deadline should be a date string`)
         return res.status(400).json({message: 'deadline should be a date string'})
     }
 
     if (assignment_created || assignment_updated) {
+        logger.info("Invalid input - You do not have permissions to provide assignment created or updated")
         return res.status(403).json({ error: 'You do not have permissions to provide assignment created or updated' });
       }
     
@@ -91,31 +96,37 @@ const updateAssignment = async(req, res) => {
     const id = req.params.id
     const assignment = await readfromdb.findAssignment(id)
     if(!assignment){
-        logger.warn(`Invalid Assignment id ${id}`)
+        logger.info(`Invalid Assignment id ${id}`)
         res.status(404).send("Invalid Assignment")
         return;
     }
     if(user.uid != assignment.uid){
-      res.status(403).send('Forbidden');
+        logger.info(`User ${user.uid} Forbidden to update ${assignment.uid}`)
+        res.status(403).send('Forbidden');
       return;
     }
     if (!name || !points || !num_of_attempts || !deadline) {
+        logger.info("Invalid input - Enter all fields")
         return res.status(400).json({ message: 'Invalid request body' });
     }
     
-    if(typeof deadline !== 'string'){
+    if(typeof name !== 'string'){
+        logger.info(`Invalid input ${name} - Name must be string`)
         return res.status(400).json({message: 'Name must be string'})
     }
 
     if(!Number.isInteger(num_of_attempts)){
+        logger.info(`Invalid input ${num_of_attempts} - Number of attempts should be integer`)
         return res.status(400).json({message: 'Number of attempts should be integer'})
     }
 
     if(typeof deadline !== 'string' || isNaN(Date.parse(deadline))){
+        logger.info(`Invalid input ${deadline} - deadline should be a date string`)
         return res.status(400).json({message: 'deadline should be a date string'})
     }
 
     if (assignment_created || assignment_updated) {
+        logger.info("Invalid input - You do not have permissions to provide assignment created or updated")
         return res.status(403).json({ error: 'You do not have permissions to provide assignment created or updated' });
     }
     await assignment.update({
@@ -145,11 +156,12 @@ const deleteAssignment = async (req, res) => {
     const id = req.params.id
     const assignment = await readfromdb.findAssignment(id)
     if(!assignment){
-        logger.warn(`Invalid Assignment id ${id}`)
+        logger.info(`Invalid Assignment id ${id}`)
         res.status(404).send("Invalid Assignment")
         return;
     }
     if(user.uid != assignment.uid){
+        logger.info(`User ${user.uid} Forbidden to update ${assignment.uid}`)
         res.status(403).send('Forbidden');
         return;
       }
