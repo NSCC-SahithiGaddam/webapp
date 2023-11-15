@@ -31,13 +31,13 @@ const authorizationCheck = async (req, res, next) => {
     const [email, password] = readAuthHeaders(req,res)
     const user = await readfromdb.findUser(email);
     if (!user) {
-        logger.info(`${email} not found - unauthorized`)
+        logger.info('user not found - unauthorized')
         res.status(401).send('Unauthorized');
         return; 
       }
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
-      logger.info(`${password} incorrect - unauthorized`)
+      logger.info(`password ${password} incorrect - unauthorized`)
       res.status(401).send('Unauthorized');
       return;
     }
