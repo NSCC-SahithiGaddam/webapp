@@ -1,7 +1,8 @@
 const readfromdb = require('../database/read')
 const authorization = require('../authorization')
-const {Assignment} = require('../database/bootstrap')
+const {Assignment, Submission} = require('../database/bootstrap')
 const logger = require('../../logger')
+const snstopic = require('./snstopic')
 
 const getAssignments = async(req, res) => {
     try{
@@ -42,7 +43,7 @@ const postAssignment = async(req, res) => {
     const { name, points, num_of_attempts, deadline,assignment_created,assignment_updated } = req.body;
     if (!name || !points || !num_of_attempts || !deadline) {
         logger.info("Invalid input - Enter all fields")
-      return res.status(400).json({ message: 'Invalid request body' });
+        return res.status(400).json({ message: 'Invalid request body' });
     }
 
     if(typeof name !== 'string'){
@@ -75,7 +76,7 @@ const postAssignment = async(req, res) => {
     .then((createAssignment) => {
         const createAssignmentWithoutUid = { ...createAssignment.toJSON() };
         delete createAssignmentWithoutUid.uid;
-        logger.info(`Successfully posted assignment id: ${createAssignmentWithoutUid.id}`)
+        logger.info(`Successfully posted assignment id: ${createAssignmentWithoutUid.assignment_id}`)
         return res.status(201).send(createAssignmentWithoutUid)})
     .catch((err) => {
         logger.error(`Error posting assignment ${err}`)
@@ -175,4 +176,50 @@ const deleteAssignment = async (req, res) => {
     }
 }
 
-module.exports = {getAssignments, getAssignmentById, postAssignment, updateAssignment, deleteAssignment}
+const submitAssignment = async(req, res) => {
+    try{
+        const id = req.params.id
+        const [email, password] = authorization.readAuthHeaders(req)
+        const assignment = await readfromdb.findAssignment(id)
+        if(!assignment){
+            logger.info(`Invalid Assignment id ${id}`)
+            res.status(404).send("Invalid Assignment")
+            return;
+        }
+        const {submission_url} = req.body
+        if(!submission_url){
+            logger.info("Invalid input - submission url is not passed")
+            return res.status(400).json({ message: 'Invalid request body' });
+        }
+        const submission_count = await Submission.count({
+            where: {
+                assignment_id: id
+              }
+        })
+        const currentDate = new Date()
+        if(submission_count < 3 && assignment.deadline > currentDate){
+            const submitAssignment = await Submission.create({
+                submission_url,
+                assignment_id: id
+            })
+            .then((submitAssignment) => {
+                snstopic.createTopic(submission_url, email)
+                logger.info(`Successfully submitted assignment id: ${submitAssignment.submission_id}`)
+                return res.status(201).send(submitAssignment)})
+            .catch((err) => {
+                logger.error(`Error posting assignment ${err}`)
+                return res.status(400).send()
+            })
+        }
+        else{
+            logger.info(`Max submissions reached for assignment ${id}`)
+            return res.status(400).json({ message: 'Unable to submit assignment' });
+        }
+    }
+    catch(err){
+        logger.error(`Error submitting assignment ${err}`)
+        return res.status(500).send()
+    }
+}
+
+module.exports = {getAssignments, getAssignmentById, postAssignment, updateAssignment, deleteAssignment, submitAssignment}

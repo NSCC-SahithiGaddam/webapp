@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const router = express.Router()
 const app = express();
-const {sequelize, createDatabase, syncDatabase, User, Assignment} = require("./src/database/bootstrap")
+const {sequelize, createDatabase, syncDatabase, User, Assignment, Submission} = require("./src/database/bootstrap")
 const insertUser = require('./src/database/insert')
 const authenticate = require('./src/database/healthz')
 const mysql = require('mysql2')
@@ -35,6 +35,13 @@ Assignment.belongsTo(User, {
   foreignKey: 'uid',
 });
 
+Assignment.hasMany(Submission, {
+  foreignKey: 'assignment_id'
+})
+Submission.belongsTo(Assignment, {
+  foreignKey: 'assignment_id'
+})
+
 async function isAuth(req, res, next) {
     await authorization.authorizationCheck(req, res, next)
   }
@@ -65,6 +72,10 @@ router.put('/:id', isAuth, async (req, res) => {
 router.delete('/:id', isAuth, async (req, res) => {
   //statsDClient.increment('assignment_delete');
   await assignmentService.deleteAssignment(req, res)
+})
+
+router.post('/:id/submission', isAuth, async (req, res) => {
+     await assignmentService.submitAssignment(req, res)
 })
 
 router.patch('/*', isAuth, async (req, res) => {

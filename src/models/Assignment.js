@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const model = (sequelize) => {
   const Assignment = sequelize.define('Assignment', {
-    id: {
+    assignment_id: {
       type: Sequelize.UUID,
       defaultValue: Sequelize.UUIDV1,
       primaryKey: true
