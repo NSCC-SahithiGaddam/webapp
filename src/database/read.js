@@ -6,7 +6,7 @@ const findUser = async (email) => {
 }
 
 const findAssignment = async (id) => {
-    const assignmentdata = await Assignment.findOne({where: {id: id}})
+    const assignmentdata = await Assignment.findOne({where: {assignment_id: id}})
     return assignmentdata
 }
 
