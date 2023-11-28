@@ -3,12 +3,8 @@ const logger = require('../../logger')
 require('dotenv').config();
 const topicARN = process.env.SNS_TOPIC_ARN
 
-AWS.config.update({ region: 'us-west-1', 
-accessKeyId: 'AKIAZHA4YEBPBQVTAV5S', 
-secretAccessKey: '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'});
-
 const sns = new AWS.SNS();
-const createTopic = (submission_url, email) => {
+const publishMessage = (submission_url, email) => {
     const messageObject = {
         submissionUrl: submission_url,
         userEmail: email
@@ -27,4 +23,4 @@ const createTopic = (submission_url, email) => {
       });
 }
 
-module.exports = {createTopic}
+module.exports = {publishMessage}

@@ -203,7 +203,7 @@ const submitAssignment = async(req, res) => {
                 assignment_id: id
             })
             .then((submitAssignment) => {
-                snstopic.createTopic(submission_url, email)
+                snstopic.publishMessage(submission_url, email)
                 logger.info(`Successfully submitted assignment id: ${submitAssignment.submission_id}`)
                 return res.status(201).send(submitAssignment)})
             .catch((err) => {
