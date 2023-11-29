@@ -207,13 +207,13 @@ const submitAssignment = async(req, res) => {
                 logger.info(`Successfully submitted assignment id: ${submitAssignment.submission_id}`)
                 return res.status(201).send(submitAssignment)})
             .catch((err) => {
-                logger.error(`Error posting assignment ${err}`)
+                logger.error(`Error submitting assignment ${err}`)
                 return res.status(400).send()
             })
         }
         else{
             logger.info(`Max submissions reached for assignment ${id}`)
-            return res.status(400).json({ message: 'Unable to submit assignment' });
+            return res.status(403).json({ message: 'Unable to submit assignment' });
         }
     }
     catch(err){
