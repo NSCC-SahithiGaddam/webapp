@@ -80,7 +80,7 @@ jobs:
           aws ec2 create-launch-template-version \
           --launch-template-name demoTemplate \
           --version-description "Version 2" \
-          --launch-template-data '{"ImageId":$latest_ami_id}' \
+          --launch-template-data "{\"ImageId\":\"$latest_ami_id\"}" \
           --source-version 1
       - name: Update Autoscaling group
         run: |
@@ -109,3 +109,6 @@ jobs:
             sleep 60
           fi
           done
+
+
+
