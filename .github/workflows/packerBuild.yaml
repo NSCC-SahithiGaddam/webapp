@@ -70,7 +70,11 @@ jobs:
           aws-region: us-west-1
           aws-profile: git-user
       - name: Get Existing Launch Template ID
-        run: launch_template_id=$(aws ec2 describe-launch-templates --launch-template-names demoTemplate)
+        run: |
+          launch_template_id=$(aws ec2 describe-launch-templates \
+          --launch-template-names demoTemplate \
+          --query "LaunchTemplates[0].LaunchTemplateId" \
+          --output text)
       - name: Create Launch Template
         run: |
           aws ec2 create-launch-template-version \
@@ -105,3 +109,6 @@ jobs:
             sleep 60
           fi
           done
+
+
+
