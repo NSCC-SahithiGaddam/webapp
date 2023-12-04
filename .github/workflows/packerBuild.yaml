@@ -82,7 +82,7 @@ jobs:
 
           aws autoscaling update-auto-scaling-group \
           --auto-scaling-group-name demoasg \
-          --launch-template LaunchTemplateId=launch_template_id,Version='$Latest'
+          --launch-template LaunchTemplateId=$launch_template_id,Version='$Latest'
 
           aws autoscaling start-instance-refresh \
           --auto-scaling-group-name demoasg
