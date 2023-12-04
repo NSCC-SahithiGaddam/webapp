@@ -55,13 +55,6 @@ jobs:
         run: packer init .
       - name: Build Packer
         run: packer build .
-      - name: Get Latest AMI 
-        run: |
-          latest_ami_id=$(aws ec2 describe-images \
-          --owners self \
-          --filters "Name=name,Values=csye6225_*" "Name=state,Values=available" \
-          --query "Images | sort_by(@, &CreationDate) | [-1].ImageId" \
-          --output text) 
       - name: Set up AWS CLI
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -69,26 +62,30 @@ jobs:
           aws-secret-access-key: ${{ secrets.DEMO_AWS_SECRET_ACCESS_KEY }}
           aws-region: us-west-1
           aws-profile: git-user
+      - name: Update AWS Infrastructure 
+        run: |
+          latest_ami_id=$(aws ec2 describe-images \
+          --owners self \
+          --filters "Name=name,Values=csye6225_*" "Name=state,Values=available" \
+          --query "Images | sort_by(@, &CreationDate) | [-1].ImageId" \
+          --output text) 
       - name: Get Existing Launch Template ID
         run: |
           launch_template_id=$(aws ec2 describe-launch-templates \
           --launch-template-names demoTemplate \
           --query "LaunchTemplates[0].LaunchTemplateId" \
           --output text)
-      - name: Create Launch Template
-        run: |
+
           aws ec2 create-launch-template-version \
           --launch-template-name demoTemplate \
           --version-description "Version 2" \
           --launch-template-data "{\"ImageId\":\"$latest_ami_id\"}" \
           --source-version 1
-      - name: Update Autoscaling group
-        run: |
+
           aws ec2 update-auto-scaling-group \
           --auto-scaling-group-name demoasg \
           --launch-template LaunchTemplateId=launch_template_id,Version='$Latest'
-      - name: Instance Refresh
-        run: |
+
           aws ec2 start-instance-refresh \
           --auto-scaling-group-name demoasg
 
@@ -109,6 +106,3 @@ jobs:
             sleep 60
           fi
           done
-
-
-
