@@ -70,13 +70,13 @@ jobs:
           aws-region: us-west-1
           aws-profile: git-user
       - name: Get Existing Launch Template ID
-        run: launch_template_id=$(aws ec2 describe-launch-templates --launch-template-names Demo)
+        run: launch_template_id=$(aws ec2 describe-launch-templates --launch-template-names demoTemplate)
       - name: Create Launch Template
         run: |
           aws ec2 create-launch-template-version \
           --launch-template-id $launch_template_id \
           --version-description "Version 2" \
-          --launch-template-data '{"ImageId":latest_ami_id}' \
+          --launch-template-data '{"ImageId":$latest_ami_id}' \
           --source-version 1
       - name: Update Autoscaling group
         run: |
@@ -105,6 +105,3 @@ jobs:
             sleep 60
           fi
           done
-
-
-
