@@ -86,14 +86,14 @@ jobs:
       - name: Initiate Instance Refresh
         run: |
           aws autoscaling start-instance-refresh \
-            --auto-scaling-group-name auto_scaling_group
+            --auto-scaling-group-name demoasg
       - name: Wait for Instance Refresh to Complete
         run: |
           status="InProgress"
           while [ "$status" == "InProgress" ]; do
             sleep 60
             status=$(aws autoscaling describe-instance-refreshes \
-                      --auto-scaling-group-name auto_scaling_group \
+                      --auto-scaling-group-name demoasg \
                       --query 'InstanceRefreshes[*].Status' \
                       --output text)
           if [[ "$status" == *"InProgress"* ]]; then
