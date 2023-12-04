@@ -65,7 +65,6 @@ jobs:
       - name: Update AWS Infrastructure 
         run: |
           latest_ami_id=$(aws ec2 describe-images \
-          --owners self \
           --filters "Name=name,Values=csye6225_*" "Name=state,Values=available" \
           --query "Images | sort_by(@, &CreationDate) | [-1].ImageId" \
           --output text) 
