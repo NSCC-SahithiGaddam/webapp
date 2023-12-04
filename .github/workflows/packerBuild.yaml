@@ -78,7 +78,7 @@ jobs:
       - name: Create Launch Template
         run: |
           aws ec2 create-launch-template-version \
-          --launch-template-id $launch_template_id \
+          --launch-template-name demoTemplate \
           --version-description "Version 2" \
           --launch-template-data '{"ImageId":$latest_ami_id}' \
           --source-version 1
@@ -109,6 +109,3 @@ jobs:
             sleep 60
           fi
           done
-
-
-
