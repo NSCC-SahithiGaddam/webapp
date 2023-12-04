@@ -68,8 +68,7 @@ jobs:
           --filters "Name=name,Values=csye6225_*" "Name=state,Values=available" \
           --query "Images | sort_by(@, &CreationDate) | [-1].ImageId" \
           --output text) 
-      - name: Get Existing Launch Template ID
-        run: |
+          
           launch_template_id=$(aws ec2 describe-launch-templates \
           --launch-template-names demoTemplate \
           --query "LaunchTemplates[0].LaunchTemplateId" \
