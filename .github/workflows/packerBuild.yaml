@@ -68,7 +68,7 @@ jobs:
           --filters "Name=name,Values=csye6225_*" "Name=state,Values=available" \
           --query "Images | sort_by(@, &CreationDate) | [-1].ImageId" \
           --output text) 
-          
+
           launch_template_id=$(aws ec2 describe-launch-templates \
           --launch-template-names demoTemplate \
           --query "LaunchTemplates[0].LaunchTemplateId" \
@@ -84,7 +84,7 @@ jobs:
           --auto-scaling-group-name demoasg \
           --launch-template LaunchTemplateId=launch_template_id,Version='$Latest'
 
-          aws ec2 start-instance-refresh \
+          aws autoscaling start-instance-refresh \
           --auto-scaling-group-name demoasg
 
           while true; do
