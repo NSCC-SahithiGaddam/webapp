@@ -46,7 +46,7 @@ async function isAuth(req, res, next) {
     await authorization.authorizationCheck(req, res, next)
   }
 
-app.use('/v1/assignments', router)
+app.use('/demo/assignments', router)
 
 
 router.get('/', isAuth, async (req, res) => {
